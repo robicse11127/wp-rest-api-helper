@@ -72,7 +72,7 @@ function add_thumbnail_to_JSON() {
 function get_image_src( $object, $field_name, $request ) {
     $feat_img_array = wp_get_attachment_image_src(
         $object['featured_media'], // Image attachment ID
-        'large',  // Size.  Ex. "thumbnail", "large", "full", etc..
+        'full',  // Size.  Ex. "thumbnail", "large", "full", etc..
         true // Whether the image should be treated as an icon.
     );
     return $feat_img_array[0];
@@ -90,6 +90,7 @@ function get_post_author($object) {
 
     return $author_details;
 }
+
 /**
  * Get Post Published Date
  */
@@ -118,3 +119,28 @@ function get_post_term_names($object) {
 
     return $term_info;
 } 
+
+/**
+ * Custom Endpoints
+ */
+add_action( 'rest_api_init', function() {
+    register_rest_route('wp/v2', 'general', [
+        'methods' => 'GET',
+        'callback' => 'get_general_info'
+    ]);
+});
+
+function get_general_info() {
+    $general = [
+        'site_title' => get_bloginfo('name'),
+        'site_tag_line' => get_bloginfo('description'),
+        'home_url' => home_url('/'),
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'admin_url' => get_bloginfo('admin_email'),
+        'wp_version' => get_bloginfo('version'),
+        'language' => get_bloginfo('language'),
+        'posts_per_page' => get_option('posts_per_page'),
+    ];
+
+    return $general;
+}
