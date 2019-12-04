@@ -121,7 +121,7 @@ function get_post_term_names($object) {
 } 
 
 /**
- * Custom Endpoints
+ * Custom Endpoint ( General Info )
  */
 add_action( 'rest_api_init', function() {
     register_rest_route('wp/v2', 'general', [
@@ -143,4 +143,98 @@ function get_general_info() {
     ];
 
     return $general;
+}
+
+/**
+ * Custom Endpoints ( Registered Menus )
+ */
+add_action( 'rest_api_init', function() {
+    register_rest_route( 'wp/v2', 'menus', [
+        'methods' => 'GET',
+        'callback' => 'get_registered_menus'
+    ]);
+});
+
+function get_registered_menus() {
+    $nav_menus  = get_registered_nav_menus();
+    $locations  = get_nav_menu_locations();
+    $menu_list  = [];
+    foreach( $nav_menus as $key=>$nav_menu ) {
+        $menu               = wp_get_nav_menu_object( $locations[ $key ] );
+        $menu_items         = wp_get_nav_menu_items($menu->term_id, array( 'order' => 'DESC' ));
+        $menu_list[$key]    = $menu_items;
+    }
+
+    return $menu_list;
+}
+
+/**
+ * Custom Endpoints ( Active Widget Locations )
+ */
+add_action( 'rest_api_init', function() {
+    register_rest_route( 'wp/v2', 'widgets', [
+        'methods' => 'GET',
+        'callback' => 'get_active_sidebars'
+    ]);
+});
+
+function get_active_sidebars() {
+    $sidebar_widget_ids = [];
+    $sidebar_widgets = $GLOBALS['wp_registered_sidebars'];
+    foreach( $sidebar_widgets as $key => $sidebar_widget ) {
+        
+    }
+    $sidebar_id = 'sidebar-1';
+        $sidebars_widgets = wp_get_sidebars_widgets();
+        $widget_ids = $sidebars_widgets[$sidebar_id]; 
+
+        $widget_data = [];
+
+        foreach( $widget_ids as $id ) {
+            $wdgtvar    = 'widget_'._get_widget_id_base( $id );
+            $type       = _get_widget_id_base( $id );
+            $instance   = get_option( $wdgtvar );
+            $key        = str_replace( $type.'-', '', $id );
+            $value      = [];
+            /**
+             * Recent Post Widget
+             */
+            if( 'recent-posts' == $type ) {
+                $args = [
+                    'post_type' => 'post',
+                    'posts_per_page' => $instance[$key]['number']
+                ];
+
+                $query = new WP_Query($args);
+
+                foreach( $query->posts as $post ) {
+                    $value [] = [
+                        'title'     => get_the_title($post->ID),
+                        'url'       => get_the_permalink($post->ID),
+                        'feature_image' => [
+                            'thumbnail' => get_the_post_thumbnail_url($post->ID, 'thumbnail'),
+                            'medium'    => get_the_post_thumbnail_url($post->ID, 'medium'),
+                            'full'      => get_the_post_thumbnail_url($post->ID, 'full')
+                        ],
+                        'date'      => get_the_date('F j, Y', $post->ID)
+                    ];
+                }
+            }
+
+            /**
+             * Nav Menu Widget
+             */
+            if( 'nav_menu' == $type ) {
+                $value[] = [
+                    'menu_item' => wp_get_nav_menu_items($instance[$key]['nav_menu'], array( 'order' => 'DESC' ))
+                ];
+            }
+
+            $widget_data[] = [
+                'type'      => $type,
+                'instance'  => $instance[$key],
+                'value'     => $value
+            ];
+        }
+    return $widget_data;
 }
