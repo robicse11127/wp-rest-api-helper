@@ -208,7 +208,7 @@ function get_active_sidebars() {
                     'posts_per_page' => $instance[$key]['number']
                 ];
 
-                $query = new WP_Query($args);
+                $query = new WP_Query($args); wp_reset_postdata();
 
                 foreach( $query->posts as $post ) {
                     $value [] = [
@@ -242,10 +242,45 @@ function get_active_sidebars() {
                 foreach($categories as $category) {
                     $category_list[] = [
                         'url' => get_category_link( $category->term_id ),
-                        'term' => $category
+                        'term' => $category,
                     ];
                 }
                 $value[] = $category_list;
+            }
+            
+            /**
+             * Page Widget
+             */
+            if( 'pages' == $type ) {
+                $args = [
+                    'post_type'         => 'page',
+                    'posts_per_page'    => -1,
+                    'post__not_in'      => array( $instance[$key]['exclude'] ),
+                    'orderby'           => $instance[$key]['sortby'],
+                ];
+                $query = new WP_Query($args); wp_reset_postdata();
+                foreach( $query->posts as $post ) {
+                    $value[] = [
+                        'title'     => get_the_title($post->ID),
+                        'url'       => get_the_permalink($post->ID),
+                        'feature_image' => [
+                            'thumbnail' => get_the_post_thumbnail_url($post->ID, 'thumbnail'),
+                            'medium'    => get_the_post_thumbnail_url($post->ID, 'medium'),
+                            'full'      => get_the_post_thumbnail_url($post->ID, 'full')
+                        ],
+                        'date'      => get_the_date('F j, Y', $post->ID)
+                    ];
+                }
+            }
+
+            /**
+             * Comment Widget
+             */
+            if( 'recent-comments' == $type ) {
+                $value[] = get_comments([
+                    'number' => $instance[$key]['number']
+                ]);
+
             }
 
             $widgets[] = [
