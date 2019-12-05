@@ -182,14 +182,17 @@ function get_active_sidebars() {
     $sidebar_widget_ids = [];
     $sidebar_widgets = $GLOBALS['wp_registered_sidebars'];
     foreach( $sidebar_widgets as $key => $sidebar_widget ) {
-        
+        $sidebar_widget_ids[] = $key;
     }
-    $sidebar_id = 'sidebar-1';
+
+    // return $sidebar_widget_ids;
+    $widget_data = [];
+
+    foreach( $sidebar_widget_ids as $sidebar_widget_id ) {
+        $sidebar_id = $sidebar_widget_id;
         $sidebars_widgets = wp_get_sidebars_widgets();
         $widget_ids = $sidebars_widgets[$sidebar_id]; 
-
-        $widget_data = [];
-
+        $widgets = [];
         foreach( $widget_ids as $id ) {
             $wdgtvar    = 'widget_'._get_widget_id_base( $id );
             $type       = _get_widget_id_base( $id );
@@ -230,11 +233,15 @@ function get_active_sidebars() {
                 ];
             }
 
-            $widget_data[] = [
+            $widgets[] = [
                 'type'      => $type,
                 'instance'  => $instance[$key],
                 'value'     => $value
             ];
         }
+
+        $widget_data[$sidebar_widget_id] = $widgets;
+    }
+        
     return $widget_data;
 }
