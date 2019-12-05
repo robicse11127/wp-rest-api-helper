@@ -233,6 +233,21 @@ function get_active_sidebars() {
                 ];
             }
 
+            /**
+             * Category Widgets
+             */
+            if( 'categories' == $type ) {
+                $category_list = [];
+                $categories = get_categories(array( 'orderby' => 'name', 'order' => 'ASC' ));
+                foreach($categories as $category) {
+                    $category_list[] = [
+                        'url' => get_category_link( $category->term_id ),
+                        'term' => $category
+                    ];
+                }
+                $value[] = $category_list;
+            }
+
             $widgets[] = [
                 'type'      => $type,
                 'instance'  => $instance[$key],
