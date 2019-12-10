@@ -162,7 +162,21 @@ function get_registered_menus() {
     foreach( $nav_menus as $key=>$nav_menu ) {
         $menu               = wp_get_nav_menu_object( $locations[ $key ] );
         $menu_items         = wp_get_nav_menu_items($menu->term_id, array( 'order' => 'DESC' ));
-        $menu_list[$key]    = $menu_items;
+
+        $menu_output = [];
+        foreach( $menu_items as $menu_item ) {
+            $menu_output[] = [
+                'ID'            => $menu_item->ID,
+                'title'         => $menu_item->title,
+                'slug'          => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $menu_item->title))),
+                'menu_order'    => $menu_item->menu_order,
+                'parent_id'     => $menu_item->menu_item_parent,
+                'post_type'     => $menu_item->post_type,
+                'url'           => $menu_item->url,
+                'type'          => $menu_item->type
+            ];
+        }
+        $menu_list[$key]    = $menu_output;
     }
 
     return $menu_list;
