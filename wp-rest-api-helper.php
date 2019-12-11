@@ -17,7 +17,7 @@ function add_thumbnail_to_JSON() {
      * Add Feature Image
      */
     register_rest_field( 
-        'post', // Where to add the field (Here, blog posts. Could be an array)
+        ['post', 'page'], // Where to add the field (Here, blog posts. Could be an array)
         'featured_image_src', // Name of new field (You can call this anything)
         array(
             'get_callback'    => 'get_image_src',
