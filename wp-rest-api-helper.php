@@ -132,13 +132,13 @@ add_action( 'rest_api_init', function() {
 
 function get_general_info() {
     $general = [
-        'site_title' => get_bloginfo('name'),
+        'site_title'    => get_bloginfo('name'),
         'site_tag_line' => get_bloginfo('description'),
-        'home_url' => home_url('/'),
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'admin_url' => get_bloginfo('admin_email'),
-        'wp_version' => get_bloginfo('version'),
-        'language' => get_bloginfo('language'),
+        'home_url'      => home_url('/'),
+        'ajax_url'      => admin_url('admin-ajax.php'),
+        'admin_url'     => get_bloginfo('admin_email'),
+        'wp_version'    => get_bloginfo('version'),
+        'language'      => get_bloginfo('language'),
         'posts_per_page' => get_option('posts_per_page'),
     ];
 
