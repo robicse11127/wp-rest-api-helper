@@ -70,12 +70,19 @@ function add_thumbnail_to_JSON() {
  * Get Post Feature Image
  */
 function get_image_src( $object, $field_name, $request ) {
-    $feat_img_array = wp_get_attachment_image_src(
-        $object['featured_media'], // Image attachment ID
-        'full',  // Size.  Ex. "thumbnail", "large", "full", etc..
-        true // Whether the image should be treated as an icon.
-    );
-    return $feat_img_array[0];
+    $full_image         = get_the_post_thumbnail_url( $object['id'], 'full' );
+    $large_image        = get_the_post_thumbnail_url( $object['id'], 'large' );
+    $medium_image       = get_the_post_thumbnail_url( $object['id'], 'medium' );
+    $thumbnail_image    = get_the_post_thumbnail_url( $object['id'], 'thumbnail' );
+
+    $feature_image = [
+        'full'      => $full_image ? $full_image : '',
+        'large'     => $large_image ? $large_image : '',
+        'medium'    => $medium_image ? $medium_image : '',
+        'thumbnail' => $thumbnail_image ? $thumbnail_image : '',
+    ];
+
+    return $feature_image;
 }
 
 /**
