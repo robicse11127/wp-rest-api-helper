@@ -233,8 +233,10 @@ function get_active_sidebars() {
 
                 foreach( $query->posts as $post ) {
                     $value [] = [
+                        'id'        => $post->ID,
                         'title'     => get_the_title($post->ID),
                         'url'       => get_the_permalink($post->ID),
+                        'slug'      => $post->post_name,
                         'feature_image' => [
                             'thumbnail' => get_the_post_thumbnail_url($post->ID, 'thumbnail'),
                             'medium'    => get_the_post_thumbnail_url($post->ID, 'medium'),
@@ -249,9 +251,20 @@ function get_active_sidebars() {
              * Nav Menu Widget
              */
             if( 'nav_menu' == $type ) {
-                $value[] = [
-                    'menu_item' => wp_get_nav_menu_items($instance[$key]['nav_menu'], array( 'order' => 'DESC' ))
-                ];
+
+                $menu_items = wp_get_nav_menu_items($instance[$key]['nav_menu'], array( 'order' => 'DESC' ));
+                foreach( $menu_items as $menu_item ) {
+                    $value[] = [
+                        'ID'            => $menu_item->ID,
+                        'title'         => $menu_item->title,
+                        'slug'          => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $menu_item->title))),
+                        'menu_order'    => $menu_item->menu_order,
+                        'parent_id'     => $menu_item->menu_item_parent,
+                        'post_type'     => $menu_item->post_type,
+                        'url'           => $menu_item->url,
+                        'type'          => $menu_item->type
+                    ];
+                }
             }
 
             /**
@@ -266,7 +279,7 @@ function get_active_sidebars() {
                         'term' => $category,
                     ];
                 }
-                $value[] = $category_list;
+                $value = $category_list;
             }
             
             /**
@@ -284,6 +297,7 @@ function get_active_sidebars() {
                     $value[] = [
                         'title'     => get_the_title($post->ID),
                         'url'       => get_the_permalink($post->ID),
+                        'slug'      => $post->post_name,
                         'feature_image' => [
                             'thumbnail' => get_the_post_thumbnail_url($post->ID, 'thumbnail'),
                             'medium'    => get_the_post_thumbnail_url($post->ID, 'medium'),
@@ -298,7 +312,7 @@ function get_active_sidebars() {
              * Comment Widget
              */
             if( 'recent-comments' == $type ) {
-                $value[] = get_comments([
+                $value = get_comments([
                     'number' => $instance[$key]['number']
                 ]);
 
