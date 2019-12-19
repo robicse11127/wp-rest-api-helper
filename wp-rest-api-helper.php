@@ -170,20 +170,53 @@ function get_registered_menus() {
         $menu               = wp_get_nav_menu_object( $locations[ $key ] );
         $menu_items         = wp_get_nav_menu_items($menu->term_id, array( 'order' => 'DESC' ));
 
-        $menu_output = [];
+        $parent_menu = [];
+        $child_menu = [];
+        $main_menu = [];
         foreach( $menu_items as $menu_item ) {
-            $menu_output[] = [
-                'ID'            => $menu_item->ID,
-                'title'         => $menu_item->title,
-                'slug'          => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $menu_item->title))),
-                'menu_order'    => $menu_item->menu_order,
-                'parent_id'     => $menu_item->menu_item_parent,
-                'post_type'     => $menu_item->post_type,
-                'url'           => $menu_item->url,
-                'type'          => $menu_item->type
+            if( $menu_item->menu_item_parent == 0 ) {
+                $parent_menu[] = [
+                    'ID'            => $menu_item->ID,
+                    'title'         => $menu_item->title,
+                    'slug'          => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $menu_item->title))),
+                    'menu_order'    => $menu_item->menu_order,
+                    'parent_id'     => $menu_item->menu_item_parent,
+                    'post_type'     => $menu_item->post_type,
+                    'url'           => $menu_item->url,
+                    'type'          => $menu_item->type
+                ];
+            }else {
+                $child_menu[] = [
+                    'ID'            => $menu_item->ID,
+                    'title'         => $menu_item->title,
+                    'slug'          => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $menu_item->title))),
+                    'menu_order'    => $menu_item->menu_order,
+                    'parent_id'     => $menu_item->menu_item_parent,
+                    'post_type'     => $menu_item->post_type,
+                    'url'           => $menu_item->url,
+                    'type'          => $menu_item->type
+                ];
+            }
+        }
+
+        $parent_menu_count = count($parent_menu);
+        $child_menu_count = count($child_menu);
+        
+        for( $i = 0; $i < $parent_menu_count; $i++ ) {
+            $child = [];
+            for( $j = 0; $j < $child_menu_count; $j++ ) {
+                if( $parent_menu[$i]['ID'] == $child_menu[$j]['parent_id'] ) {
+                    $child[] = $child_menu[$j];
+                }
+            }
+            
+            $main_menu[] = [
+                'parent' => $parent_menu[$i],
+                'child' => $child
             ];
         }
-        $menu_list[$key]    = $menu_output;
+
+        $menu_list[$key] = $main_menu;
     }
 
     return $menu_list;
