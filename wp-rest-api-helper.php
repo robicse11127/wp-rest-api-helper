@@ -76,10 +76,10 @@ function get_image_src( $object, $field_name, $request ) {
     $thumbnail_image    = get_the_post_thumbnail_url( $object['id'], 'thumbnail' );
 
     $feature_image = [
-        'full'      => $full_image ? $full_image : '',
-        'large'     => $large_image ? $large_image : '',
-        'medium'    => $medium_image ? $medium_image : '',
-        'thumbnail' => $thumbnail_image ? $thumbnail_image : '',
+        'full'      => $full_image ? $full_image : plugins_url( '/', __FILE__ ) . 'img/placeholder.png',
+        'large'     => $large_image ? $large_image : plugins_url( '/', __FILE__ ) . 'img/placeholder.png',
+        'medium'    => $medium_image ? $medium_image : plugins_url( '/', __FILE__ ) . 'img/placeholder.png',
+        'thumbnail' => $thumbnail_image ? $thumbnail_image : plugins_url( '/', __FILE__ ) . 'img/placeholder.png',
     ];
 
     return $feature_image;
