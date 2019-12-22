@@ -179,7 +179,7 @@ if( !function_exists( 'wprah_add_meta_box_values' ) ) {
             'metaboxes',
             array(
                 'get_callback'    => 'wprah_get_post_meta_values',
-                'update_callback' => null,
+                'update_callback' => 'wprah_update_post_meta_values',
                 'schema'          => null,
             )
         );
