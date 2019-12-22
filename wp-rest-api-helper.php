@@ -192,6 +192,13 @@ if( !function_exists( 'wprah_add_meta_box_values' ) ) {
         $loved = get_post_meta(15, '_post_loved', true);
         return $meta = get_post_meta($object['id']);
     }
+
+    /**
+     * Update Post meta Values
+     */
+    function wprah_update_post_meta_values( $value, $object, $field_name ) {
+        return update_post_meta( $object['id'], $field_name, $value );
+    }
 }
 
 
