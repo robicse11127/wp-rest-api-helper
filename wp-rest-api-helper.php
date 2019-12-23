@@ -189,16 +189,21 @@ if( !function_exists( 'wprah_add_meta_box_values' ) ) {
      * Get post meta boxes
      */
     function wprah_get_post_meta_values($object) {
-        $loved = get_post_meta(15, '_post_loved', true);
         return $meta = get_post_meta($object['id']);
     }
 
     /**
      * Update Post meta Values
      */
-    function wprah_update_post_meta_values( $value, $object, $field_name ) {
-        return update_post_meta( $object['id'], $field_name, $value );
+    function wprah_update_post_meta_values( $field_value, $object ) {
+        if( is_array($field_value) ) {
+            foreach( $field_value as $key => $value ) {
+                update_post_meta( $object->ID, $key, $value );
+            }
+            return true;
+        }
     }
+    
 }
 
 
