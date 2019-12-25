@@ -461,26 +461,3 @@ if( !function_exists( 'wprah_get_active_sidebars' ) ) {
         return $widget_data;
     }
 }
-
-/**
- * Custom Endpoints ( Get Wp Options )
- */
-add_action( 'rest_api_init', function() {
-    register_rest_route( 'wp/v2', 'options', [
-        'methods' => 'GET',
-        'callback' => 'get_wp_options'
-    ]);
-});
-
-function get_wp_options() {
-    $all_options = wp_load_alloptions();
-    $my_options  = array();
-    
-    foreach ( $all_options as $name => $value ) {
-        if ( stristr( $name, '_transient' ) ) {
-            $my_options[ $name ] = $value;
-        }
-    }
-
-    return $my_options;
-}
