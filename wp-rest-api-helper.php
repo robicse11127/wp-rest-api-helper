@@ -1,11 +1,14 @@
 <?php 
 /**
  * Plugin Name: WP Rest API Helper
+ * Plugin URI: https://wpoutline.com/plugins/wp-rest-api-helper
  * Author: MD. Rabiul Islam
- * Author URI: https://rabiul-islam-robi.me
+ * Author URI: https://robizstory.wordpress.com/
  * Text-domain: wp-rest-api-helper
  * Version: 1.0.0
  * Description: A plugin to help out WP Rest API
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if( !defined('ABSPATH') ) : exit(); endif;
@@ -114,7 +117,7 @@ if( !function_exists( 'wprah_add_published_date' ) ) {
      * Get Post Published Date
      */
     function wprah_get_post_published_date($object) {
-        return $post_punlishde_on = date('M j, Y', strtotime($object['date']));
+        return $post_published_on = date('M j, Y', strtotime($object['date']));
     }
 
 }
@@ -204,6 +207,40 @@ if( !function_exists( 'wprah_add_meta_box_values' ) ) {
         }
     }
     
+}
+
+/**
+ * Add Post Slug In Search
+ * 
+ * @author Rabiul
+ * 
+ * @since 1.0.0
+ */
+if( !function_exists( 'wprah_add_post_slug' ) ) {
+    add_action( 'rest_api_init', 'wprah_add_post_slug' );
+    function wprah_add_post_slug() {
+        register_rest_field( 
+            'post', 
+            'search_slug',
+            array(
+                'get_callback'    => 'wprah_get_post_slug',
+                'update_callback' => null,
+                'schema'          => null,
+            )
+        );
+    }
+
+    
+    /**
+     * Get Post Author Details
+     */
+    function wprah_get_post_slug($object) {
+        $post_id    = $object['id'];
+        $slug       = get_post($post_id)->post_name;
+
+        return $slug;
+    }
+
 }
 
 
