@@ -461,3 +461,33 @@ if( !function_exists( 'wprah_get_active_sidebars' ) ) {
         return $widget_data;
     }
 }
+
+/**
+* Wlementor Content
+* @author Rabiul
+* @since 1.0.0
+*/
+add_action("rest_api_init", function () {
+    register_rest_route(
+          "wp/v2"
+        , "/elementor/pages/content/(?P<id>\d+)"
+        , [
+            "methods" => "GET",
+            "callback" => function (\WP_REST_Request $req) {
+
+                $contentElementor = "";
+
+                if (class_exists("\\Elementor\\Plugin")) {
+                    $post_ID = $req->get_param("id");
+
+                    $pluginElementor = \Elementor\Plugin::instance();
+                    $contentElementor = $pluginElementor->frontend->get_builder_content($post_ID, true);
+                }
+
+
+                return $contentElementor;
+
+            },
+        ]
+    );
+});
