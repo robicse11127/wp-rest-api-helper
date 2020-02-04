@@ -229,7 +229,6 @@ if( !function_exists( 'wprah_add_post_slug' ) ) {
             )
         );
     }
-
     
     /**
      * Get Post Author Details
@@ -525,6 +524,97 @@ add_action("rest_api_init", function () {
                 return $contentElementor;
 
             },
+        ]
+    );
+});
+
+/**
+* Custom Search
+* @author Rabiul
+* @since 1.0.0
+*/
+// Title Filter
+function wprah_search_title($where, $wp_query) {
+    global $wpdb;
+    if ( $search_term = $wp_query->get( 'wprah_post_search_title' ) ) {
+        $where .= ' AND ' . $wpdb->posts . '.post_title LIKE \'%' . $wpdb->esc_like( $search_term ) . '%\'';
+    }
+    return $where;
+}
+add_action('rest_api_init', function() {
+    register_rest_route(
+        'wp/v2',
+        '/s/(?P<slug>[\A-Za-z0-9\-\_]+)',
+        [
+            'methods' => 'GET',
+            'callback' => function(\WP_REST_REQUEST $req) {
+                $args = array(
+                    'wprah_post_search_title' => $req->get_param('slug'), // search post title only
+                    'post_status' => 'publish',
+                );
+                add_filter( 'posts_where', 'wprah_search_title', 10, 2 );
+                $query = new WP_Query($args);
+                remove_filter( 'posts_where', 'wprah_search_title', 10 );
+                $output = [];
+
+                foreach( $query->posts as $post ) {
+                    // Featured Image
+                    $full_image         = get_the_post_thumbnail_url( $post->ID, 'full' );
+                    $large_image        = get_the_post_thumbnail_url( $post->ID, 'large' );
+                    $medium_image       = get_the_post_thumbnail_url( $post->ID, 'medium' );
+                    $thumbnail_image    = get_the_post_thumbnail_url( $post->ID, 'thumbnail' );
+
+                    $feature_image = [
+                        'full'      => $full_image ? $full_image : plugins_url( '/', __FILE__ ) . 'img/placeholder.png',
+                        'large'     => $large_image ? $large_image : plugins_url( '/', __FILE__ ) . 'img/placeholder.png',
+                        'medium'    => $medium_image ? $medium_image : plugins_url( '/', __FILE__ ) . 'img/placeholder.png',
+                        'thumbnail' => $thumbnail_image ? $thumbnail_image : plugins_url( '/', __FILE__ ) . 'img/placeholder.png',
+                    ];
+
+                    // Post Terms
+                    $terms = wp_get_post_terms( $post->ID, 'category', array('fields' => 'ids') );
+                    $ids = $terms;
+                    $term_info = [];
+                    foreach( $ids as $id ) {
+                        $term = get_term_by('id', $id, 'category');
+                        $term_info[] = [
+                            'id'            => $term->term_id,
+                            'name'          => $term->name,
+                            'slug'          => $term->slug,
+                            'description'   => $term->description,
+                            'parent'        => $term->parent,
+                            'count'         => $term->count,
+                            'url'           => get_term_link($term->term_id, 'category')
+                        ];
+                    }
+                    $output[] = [
+                        'id' => $post->ID,
+                        'title' => [
+                            'rendered' => $post->post_title
+                        ],
+                        'slug' => $post->post_name,
+                        'excerpt' => [
+                            'rendered' => $post->post_excerpt
+                        ],
+                        'content' => [
+                            'rendered' => $post->content
+                        ],
+                        'author' => $post->post_author,
+                        'author_detials' => [
+                            'user_nicename' => get_the_author_meta('user_nicename', $post->post_author),
+                            'user_url' => get_author_posts_url($post->post_author)
+                        ],
+                        'featured_image_src' => $feature_image,
+                        'published_on' => date('M j, Y', strtotime($post->post_date)),
+                        'modified' => date('M j, Y', strtotime($post->post_modified)),
+                        'post_terms' => $term_info,
+                        'tags' => get_the_tags($post->ID),
+                        'link' => get_the_permalink( $post->ID )
+
+                    ];
+                }
+                return $output;
+            }
         ]
     );
 });
