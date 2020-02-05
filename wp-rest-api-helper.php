@@ -544,13 +544,13 @@ function wprah_search_title($where, $wp_query) {
 add_action('rest_api_init', function() {
     register_rest_route(
         'wp/v2',
-        '/s/(?P<slug>[\A-Za-z0-9\-\_]+)(?:/(?P<per_page>[\0-9]+))?(?:/(?P<page>[\0-9]+))?',
+        '/s(?:/(?P<slug>[\A-Za-z0-9\-\_]+))?(?:/(?P<per_page>[\0-9]+))?(?:/(?P<page>[\0-9]+))?',
         [
             'methods' => 'GET',
             'callback' => function(\WP_REST_REQUEST $req) {
                 $paged = (get_query_var('paged')) ? absint( get_query_var('paged') ) : 1;
                 $args = array(
-                    'wprah_post_search_title' => $req->get_param('slug'), // search post title only
+                    'wprah_post_search_title' => $req->get_param('slug') ? $req->get_param('slug') : '', // search post title only
                     'post_status'       => 'publish',
                     'posts_per_page'    => $req->get_param('per_page') ? $req->get_param('per_page') : -1,
                     'paged'             => $req->get_param('page') ? $req->get_param('page') : 1
