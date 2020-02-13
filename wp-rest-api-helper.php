@@ -499,36 +499,6 @@ if( !function_exists( 'wprah_get_active_sidebars' ) ) {
 }
 
 /**
-* Wlementor Content
-* @author Rabiul
-* @since 1.0.0
-*/
-add_action("rest_api_init", function () {
-    register_rest_route(
-          "wp/v2"
-        , "/elementor/pages/content/(?P<id>\d+)"
-        , [
-            "methods" => "GET",
-            "callback" => function (\WP_REST_Request $req) {
-
-                $contentElementor = "";
-
-                if (class_exists("\\Elementor\\Plugin")) {
-                    $post_ID = $req->get_param("id");
-
-                    $pluginElementor = \Elementor\Plugin::instance();
-                    $contentElementor = $pluginElementor->frontend->get_builder_content($post_ID, true);
-                }
-
-
-                return $contentElementor;
-
-            },
-        ]
-    );
-});
-
-/**
 * Custom Search
 * @author Rabiul
 * @since 1.0.0
@@ -621,3 +591,49 @@ add_action('rest_api_init', function() {
         ]
     );
 });
+
+// Contact Form Endpoints
+function contact_form_endpoints() {
+    register_rest_route('wp/v2', '/contact-forms', [
+        'methods' => 'post',
+        'callback' => 'sent_contact_from'
+    ]);
+}
+add_action('rest_api_init', 'contact_form_endpoints');
+
+function sent_contact_from( WP_REST_Request $request ) {
+    $name = sanitize_text_field(trim($request['name']));
+    $subject = sanitize_text_field(trim($request['subject']));
+    $email = sanitize_email(trim($request['email']));
+    $message = wp_kses_post(trim($request['message']));
+    $errors = [];
+    if( empty($name) ) {
+        $errors[] = 'Name is required';
+    }
+    if( empty($subject) ) {
+        $errors[] = 'Subject is required';
+    }
+    if( empty($email) || ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+        $errors[] = 'Valid email is required';
+    }
+    if( empty($message) ) {
+        $errors[] = 'Message is required';
+    }
+
+    if( count($errors) ) {
+        return new WP_Error( 'contact_form_errors', $errors, ['status' => 422] );
+    }
+
+    $to         = 'rabiul@bitmascot.com';
+    $body    = "Name: {$name}. <br> From: {$email}. <br> Message: {$message}";
+    $headers    = "From : <{$email}>";
+    $headers 	.= "MIME-Version: 1.0\r\n";
+    $headers 	.= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+    $sent_email = mail($to, $subject, $body, $headers);
+    if($sent_email) {
+        return 'success';
+    }else {
+        $errors[] = 'Email not sent!';
+        return new WP_Error( 'email_not_sent', $errors, ['status' => 422] );
+    }
+}
