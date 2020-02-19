@@ -8,12 +8,21 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 A plugin to help out WP Rest API.
 
-== Descriotion == 
-A plugin to help out WP Rest API. This plugin will allow to have menus and widgets values through thier endpoints. For example if you want to have menus then visit to https://yoursite.com/wp-json/wp-v2/menus. And if you wnat to have your widgets then visit to https://yoursite.com/wp-json/wp-v2/widgets. Also if you want get the general informations form the site then visit https://yoursite.com/wp-json/wp-v2/general.
+== Description == 
+A plugin to help out the default WordPress Rest Api Data. 
 
+== Features ==
+-- Post & Pages --
+Endpoint: http://yoursite.com/wp-json/wp/v2/menus
+1. Get feature image url of a post. [ Full, large, Medium, Thumbnail ]
+2. Get publish date in a human readable format.
+3. Get author details which includes user_nicename, user_url.
+4. Get post terms object. That includes term id, name, slug, description, parent, post count and url.
 
+-- Menu -- 
+Endpoint: http://yoursite.com/wp-json/wp/v2/menus
+1. Provides full menu list of a theme based on menu location. object contains parent and its child informations.
 
-= Installation = 
 
 = Docs & Supports = 
 
