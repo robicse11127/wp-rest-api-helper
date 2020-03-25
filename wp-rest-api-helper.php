@@ -216,31 +216,31 @@ if( !function_exists( 'wprah_add_meta_box_values' ) ) {
  * 
  * @since 1.0.0
  */
-if( !function_exists( 'wprah_add_post_slug' ) ) {
-    add_action( 'rest_api_init', 'wprah_add_post_slug' );
-    function wprah_add_post_slug() {
-        register_rest_field( 
-            'post', 
-            'search_slug',
-            array(
-                'get_callback'    => 'wprah_get_post_slug',
-                'update_callback' => null,
-                'schema'          => null,
-            )
-        );
-    }
+// if( !function_exists( 'wprah_add_post_slug' ) ) {
+//     add_action( 'rest_api_init', 'wprah_add_post_slug' );
+//     function wprah_add_post_slug() {
+//         register_rest_field( 
+//             'post', 
+//             'search_slug',
+//             array(
+//                 'get_callback'    => 'wprah_get_post_slug',
+//                 'update_callback' => null,
+//                 'schema'          => null,
+//             )
+//         );
+//     }
     
-    /**
-     * Get Post Author Details
-     */
-    function wprah_get_post_slug($object) {
-        $post_id    = $object['id'];
-        $slug       = get_post($post_id)->post_name;
+//     /**
+//      * Get Post Author Details
+//      */
+//     function wprah_get_post_slug($object) {
+//         $post_id    = $object['id'];
+//         $slug       = get_post($post_id)->post_name;
 
-        return $slug;
-    }
+//         return $slug;
+//     }
 
-}
+// }
 
 
 /**
