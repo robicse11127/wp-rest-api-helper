@@ -1,6 +1,6 @@
 === WP Rest API Helper ===
 Contributors: rabiulislamrobi
-Tags: rest api, rest, josn data, api, rest api helper.
+Tags: rest api, rest, josn data, api, rest apu helper.
 Requires at least: 4.7
 Tested up to: 5.3
 License: GPLv2 or later
