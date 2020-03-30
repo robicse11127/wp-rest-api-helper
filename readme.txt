@@ -1,11 +1,9 @@
 === WP REST API Helper ===
 Contributors: rabiulislamrobi
-Donate link: 
 Tags: rest api, api, rest, 
-Requires at least: 4.0
-Tested up to: 4.8
-Stable tag: trunk
-Requires PHP: 5.4
+Requires at least: 4.7
+Tested up to: 5.3.2
+Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
