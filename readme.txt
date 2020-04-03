@@ -2,7 +2,7 @@
 Contributors: rabiulislamrobi
 Tags: rest api, api, rest,
 Requires at least: 4.7
-Tested up to: 5.3.2
+Tested up to: 5.4
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -52,9 +52,6 @@ http://your-site.com/wp-json/wp/v2/pages
 <b>Endpoint:</b> http://your-site.com/wp-json/wp/v2/general
 * Provides the general information about the site.
 
-## Changelog
-* Initial Release 1.0.0
-
 == Installation ==
 
 This section describes how to install the plugin and get it working.
@@ -73,7 +70,10 @@ e.g.
 
 
 == Changelog ==
-
+# Release Version - 1.0.0
+- Initial release.
+# Release Version - 2.0.0
+- Internal plugin structure changed.
 
 == Upgrade Notice ==
 
