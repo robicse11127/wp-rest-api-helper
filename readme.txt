@@ -74,6 +74,8 @@ e.g.
 - Initial release.
 # Release Version - 2.0.0
 - Internal plugin structure changed.
+# Release Version - 2.0.1
+- Plugin updater added.
 
 == Upgrade Notice ==
 
