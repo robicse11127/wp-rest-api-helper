@@ -1,0 +1,17 @@
+{
+    "name": "rabiul/wp-rest-api-helper",
+    "description": "A plugin to help out WordPress REST API",
+    "authors": [
+        {
+            "name": "MD Rabiul Islam",
+            "email": "robizmailbox@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "WPRAH\\API\\": "api/",
+            "WPRAH\\LIBS\\": "libs/"
+        }
+    }
+}

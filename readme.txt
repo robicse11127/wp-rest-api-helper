@@ -1,6 +1,6 @@
 === WP REST API Helper ===
 Contributors: rabiulislamrobi
-Tags: rest api, api, rest, 
+Tags: rest api, api, rest,
 Requires at least: 4.7
 Tested up to: 5.3.2
 Requires PHP: 7.0
